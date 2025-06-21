@@ -23,6 +23,7 @@ public class CreatingUserTest {
     private String password;
     private String name;
     private String accessToken;
+    private ValidatableResponse createResponse;
 
     @Before
     @Step("Подготовка тестовых данных")
@@ -30,29 +31,27 @@ public class CreatingUserTest {
         email = (RandomStringUtils.randomAlphanumeric(2, 10) + "@" + RandomStringUtils.randomAlphabetic(2, 8) + "." + "ru").toLowerCase();
         password = RandomStringUtils.randomAlphanumeric(10);
         name = RandomStringUtils.randomAlphabetic(5, 10);
+        createResponse = userSteps.createUser(email, password, name);
     }
 
     @Test
     @DisplayName("Создание пользователя с валидными значениями email, password, name")
     @Description("ОР - success:true")
     public void shouldReturnSuccessTrueAfterCreateUserTest() {
-        ValidatableResponse response = userSteps.createUser(email, password, name);
-        response.statusCode(SC_OK)
+        createResponse.statusCode(SC_OK)
                 .assertThat()
                 .body("success", equalTo(true))
                 .body("user.email", equalTo(email))
                 .body("user.name", equalTo(name))
                 .body("accessToken", not(emptyOrNullString()))
                 .body("refreshToken", not(emptyOrNullString()));
-        accessToken = response.extract().path("accessToken");
     }
 
     @Test
     @DisplayName("Создание уже существующего пользователя")
     @Description("ОР - success:false")
     public void shouldReturnSuccessFalseAfterCreateAlreadyExistsUserTest() {
-        ValidatableResponse response = userSteps.createUser(email, password, name);
-        response
+        createResponse
                 .statusCode(SC_OK)
                 .assertThat()
                 .body("success", equalTo(true))
@@ -60,12 +59,11 @@ public class CreatingUserTest {
                 .body("user.name", equalTo(name))
                 .body("accessToken", not(emptyOrNullString()))
                 .body("refreshToken", not(emptyOrNullString()));
-        response
+        createResponse
                 .statusCode(SC_FORBIDDEN)
                 .assertThat()
                 .body("success", equalTo(false))
                 .body("message", equalTo("User with such email already exists"));
-        accessToken = response.extract().path("accessToken");
     }
 
     @Test
@@ -78,7 +76,6 @@ public class CreatingUserTest {
                 .assertThat()
                 .body("success", equalTo(false))
                 .body("message", equalTo("Email, password and name are required fields"));
-        accessToken = response.extract().path("accessToken");
     }
 
     @Test
@@ -91,7 +88,6 @@ public class CreatingUserTest {
                 .assertThat()
                 .body("success", equalTo(false))
                 .body("message", equalTo("Email, password and name are required fields"));
-        accessToken = response.extract().path("accessToken");
     }
 
     @Test
@@ -104,13 +100,13 @@ public class CreatingUserTest {
                 .assertThat()
                 .body("success", equalTo(false))
                 .body("message", equalTo("Email, password and name are required fields"));
-        accessToken = response.extract().path("accessToken");
     }
 
 
     @After
     @Step("Удаление пользователя")
     public void tearDown() {
+        accessToken = createResponse.extract().path("accessToken");
         if (accessToken != null && !accessToken.isEmpty()) {
             userSteps.deleteUser(accessToken);
         }

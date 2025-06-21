@@ -19,7 +19,7 @@ public class LoginUserSteps {
                 .contentType("application/json")
                 .body(loginRequest)
                 .when()
-                .post(LOGINUSERHANDLER) // замените на актуальный путь
+                .post(LOGINUSERHANDLER)
                 .then();
     }
 }
