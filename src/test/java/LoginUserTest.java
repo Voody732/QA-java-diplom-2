@@ -38,9 +38,9 @@ public class LoginUserTest {
     }
 
     @Test
-    @Step("Авторизация пользователя с валидными параметрами")
+    @DisplayName("Авторизация пользователя с валидными параметрами")
     @Description("ОР - success:true")
-    public void ShouldReturn200OkWithCorrectLoginOrPassword() {
+    public void shouldReturn200OkWithCorrectLoginOrPassword() {
         ValidatableResponse response = userLogin.loginUser(email, password);
         response
                 .statusCode(SC_OK)

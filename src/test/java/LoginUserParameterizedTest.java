@@ -57,9 +57,9 @@ public class LoginUserParameterizedTest {
     }
 
     @Test
-    @Step("Авторизация с невалидными значениями пользователя")
+    @DisplayName("Авторизация с невалидными значениями пользователя")
     @Description("ОР - success:false")
-    public void ShouldReturn401UnauthorizedWithIncorrectLoginOrPassword() {
+    public void shouldReturn401UnauthorizedWithIncorrectLoginOrPassword() {
         ValidatableResponse response = userLogin.loginUser(email, password);
         response
                 .statusCode(SC_UNAUTHORIZED)

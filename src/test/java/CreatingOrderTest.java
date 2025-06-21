@@ -40,9 +40,9 @@ public class CreatingOrderTest {
     }
 
     @Test
-    @Step("Создание заказа с валидными значениями ингредиентов и авторизацией")
+    @DisplayName("Создание заказа с валидными значениями ингредиентов и авторизацией")
     @Description("ОР - 200, валидное тело заказа ")
-    public void ShouldReturn200WithAuth() {
+    public void shouldReturn200WithAuth() {
         accessToken = response.extract().path("accessToken");
         ValidatableResponse responseGetIngredients = orderSteps.getIngredients();
         List<String> ingredients = responseGetIngredients.extract().path("data._id");
@@ -59,9 +59,9 @@ public class CreatingOrderTest {
     }
 
     @Test
-    @Step("Создание заказа с валидными значениями ингредиентов и без авторизации")
+    @DisplayName("Создание заказа с валидными значениями ингредиентов и без авторизации")
     @Description("ОР - 401 Unauthorized")
-    public void ShouldReturn401WithoutAuth() {
+    public void shouldReturn401WithoutAuth() {
         ValidatableResponse responseGetIngredients = orderSteps.getIngredients();
         List<String> ingredients = responseGetIngredients.extract().path("data._id");
         List<String> orderIngredients = new ArrayList<>();
@@ -70,24 +70,28 @@ public class CreatingOrderTest {
         orderIngredients.add(ingredients.get(4));
         ValidatableResponse orderResponse =
                 orderSteps.createOrder(new CreateOrderRequest(orderIngredients));
-        orderResponse.statusCode(SC_UNAUTHORIZED);
+        orderResponse.statusCode(SC_UNAUTHORIZED)
+                .body("success", equalTo(false))
+                .body("message", equalTo("You should be authorised"));
     }
 
     @Test
-    @Step("Создание заказа без ингредиентов и с  авторизации")
+    @DisplayName("Создание заказа без ингредиентов и с  авторизации")
     @Description("ОР - 400 Bad request")
-    public void ShouldReturn400WithoutIngredientsAndWithAuth() {
+    public void shouldReturn400WithoutIngredientsAndWithAuth() {
         accessToken = response.extract().path("accessToken");
         List<String> orderIngredients = new ArrayList<>();
         ValidatableResponse orderResponse =
                 orderSteps.createOrder(new CreateOrderRequest(orderIngredients), accessToken);
-        orderResponse.statusCode(SC_BAD_REQUEST);
+        orderResponse.statusCode(SC_BAD_REQUEST)
+                .body("success", equalTo(false))
+                .body("message", equalTo("Ingredient ids must be provided"));
     }
 
     @Test
-    @Step("Создание заказа c невалидными ингредиентами и с  авторизации")
+    @DisplayName("Создание заказа c невалидными ингредиентами и с  авторизации")
     @Description("ОР - 500 Iternal server error")
-    public void ShouldReturn500WithInvalidHAshIngredientsAndWithAuth() {
+    public void shouldReturn500WithInvalidHAshIngredientsAndWithAuth() {
         accessToken = response.extract().path("accessToken");
         List<String> orderIngredients = new ArrayList<>();
         orderIngredients.add("Kon`");

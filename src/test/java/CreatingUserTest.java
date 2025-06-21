@@ -33,9 +33,9 @@ public class CreatingUserTest {
     }
 
     @Test
-    @Step("Создание пользователя с валидными значениями email, password, name")
+    @DisplayName("Создание пользователя с валидными значениями email, password, name")
     @Description("ОР - success:true")
-    public void ShouldReturnSuccessTrueAfterCreateUserTest() {
+    public void shouldReturnSuccessTrueAfterCreateUserTest() {
         ValidatableResponse response = userSteps.createUser(email, password, name);
         response.statusCode(SC_OK)
                 .assertThat()
@@ -48,9 +48,9 @@ public class CreatingUserTest {
     }
 
     @Test
-    @Step("Создание уже существующего пользователя")
+    @DisplayName("Создание уже существующего пользователя")
     @Description("ОР - success:false")
-    public void ShouldReturnSuccessFalseAfterCreateAlreadyExistsUserTest() {
+    public void shouldReturnSuccessFalseAfterCreateAlreadyExistsUserTest() {
         ValidatableResponse response = userSteps.createUser(email, password, name);
         response
                 .statusCode(SC_OK)
@@ -69,9 +69,9 @@ public class CreatingUserTest {
     }
 
     @Test
-    @Step("Создание пользователя без email")
+    @DisplayName("Создание пользователя без email")
     @Description("ОР - success:false")
-    public void ShouldReturnForbiddenSuccessFalseAfterCreateUserWithoutEmailTest() {
+    public void shouldReturnForbiddenSuccessFalseAfterCreateUserWithoutEmailTest() {
         ValidatableResponse response = userSteps.createUser(this.email = null, password, name);
         response
                 .statusCode(SC_FORBIDDEN)
@@ -82,9 +82,9 @@ public class CreatingUserTest {
     }
 
     @Test
-    @Step("Создание пользователя без password")
+    @DisplayName("Создание пользователя без password")
     @Description("ОР - success:false")
-    public void ShouldReturnForbiddenSuccessFalseAfterCreateUserWithoutPasswordTest() {
+    public void shouldReturnForbiddenSuccessFalseAfterCreateUserWithoutPasswordTest() {
         ValidatableResponse response = userSteps.createUser(email, this.password = null, name);
         response
                 .statusCode(SC_FORBIDDEN)
@@ -95,9 +95,9 @@ public class CreatingUserTest {
     }
 
     @Test
-    @Step("Создание пользователя без name")
+    @DisplayName("Создание пользователя без name")
     @Description("ОР - success:false")
-    public void ShouldReturnForbiddenSuccessFalseAfterCreateUserWithoutNameTest() {
+    public void shouldReturnForbiddenSuccessFalseAfterCreateUserWithoutNameTest() {
         ValidatableResponse response = userSteps.createUser(email, password, this.name = null);
         response
                 .statusCode(SC_FORBIDDEN)
